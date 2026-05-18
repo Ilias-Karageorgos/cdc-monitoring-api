@@ -1,0 +1,14 @@
+# Claude Code metadata
+.claude/
+
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+
+# VS Code settings (personal, not shared)
+.vscode/settings.json
+
+# Project internal notes (not for public repo)
+CLAUDE.md

@@ -1,0 +1,6 @@
+@CdcMonitoringApi_HostAddress = http://localhost:5287
+
+GET {{CdcMonitoringApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
