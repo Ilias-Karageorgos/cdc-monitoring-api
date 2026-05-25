@@ -22,4 +22,27 @@ public class TasksController : ControllerBase
     {
         return _store.GetAll();
     }
+
+    [HttpGet("{id}")]
+    public ActionResult<ReplicationTask> GetTaskById(int id)
+    {
+        var task = _store.GetById(id);
+        if (task == null)
+        {
+            return NotFound();
+        }
+        return Ok(task);
+    }
+
+    [HttpGet("{id}/metrics")]
+    public ActionResult<IEnumerable<TaskMetric>> GetTaskMetrics(int id)
+    {
+        var task = _store.GetById(id);
+        if (task == null)
+        {
+            return NotFound();
+        }
+        var metrics = _store.GetMetricsByTaskId(id);
+        return Ok(metrics);
+    }
 }
