@@ -5,19 +5,77 @@ namespace CdcMonitoringApi.Data;
 public class InMemoryTaskStore
 {
     private readonly List<ReplicationTask> _tasks = new List<ReplicationTask>{
-            new ReplicationTask(1, "Task 1", "Oracle", "Kafka", ReplicationStatus.Running, DateTime.UtcNow.AddMinutes(-5)),
-            new ReplicationTask(2, "Task 2", "SQL Server", "Kafka", ReplicationStatus.Stopped, DateTime.UtcNow.AddMinutes(-10)),
-            new ReplicationTask(3, "Task 3", "MySQL", "Kafka", ReplicationStatus.Error, DateTime.UtcNow.AddMinutes(-15))
+            new ReplicationTask
+            {
+                Id = 1,
+                Name = "Task 1",
+                SourceDb = "Oracle",
+                TargetDb = "Kafka",
+                Status = ReplicationStatus.Running,
+                LastUpdateTime = DateTime.UtcNow.AddMinutes(-5)
+            },
+            new ReplicationTask
+            {
+                Id = 2,
+                Name = "Task 2",
+                SourceDb = "SQL Server",
+                TargetDb = "Kafka",
+                Status = ReplicationStatus.Stopped,
+                LastUpdateTime = DateTime.UtcNow.AddMinutes(-10)
+            },
+            new ReplicationTask
+            {
+                Id = 3,
+                Name = "Task 3",
+                SourceDb = "MySQL",
+                TargetDb = "Kafka",
+                Status = ReplicationStatus.Error,
+                LastUpdateTime = DateTime.UtcNow.AddMinutes(-15)
+            }
         };
 
     private readonly List<TaskMetric> _metrics = new List<TaskMetric>{
-            new TaskMetric(1, 1, 0.5, 1200, DateTime.UtcNow.AddMinutes(-3)),
-            new TaskMetric(2, 1, 0.7, 1100, DateTime.UtcNow.AddMinutes(-2)),
-            new TaskMetric(3, 1, 0.6, 1300, DateTime.UtcNow.AddMinutes(-1)),
-            new TaskMetric(4, 2, 5.2, 0,    DateTime.UtcNow.AddMinutes(-2)),
-            new TaskMetric(5, 2, 5.8, 0,    DateTime.UtcNow.AddMinutes(-1))
-    };
-    
+            new TaskMetric
+            {
+                Id = 1,
+                TaskId = 1,
+                LagSeconds = 0.5,
+                RowsPerSecond = 1200,
+                Timestamp = DateTime.UtcNow.AddMinutes(-3)
+            },
+            new TaskMetric
+            {
+                Id = 2,
+                TaskId = 1,
+                LagSeconds = 0.7,
+                RowsPerSecond = 1100,
+                Timestamp = DateTime.UtcNow.AddMinutes(-2)
+            },
+            new TaskMetric
+            {
+                Id = 3,
+                TaskId = 1,
+                LagSeconds = 0.6,
+                RowsPerSecond = 1300,
+                Timestamp = DateTime.UtcNow.AddMinutes(-1)
+            },
+            new TaskMetric
+            {
+                Id = 4,
+                TaskId = 2,
+                LagSeconds = 5.2,
+                RowsPerSecond = 0,
+                Timestamp = DateTime.UtcNow.AddMinutes(-2)
+            },
+            new TaskMetric
+            {
+                Id = 5,
+                TaskId = 2,
+                LagSeconds = 5.8,
+                RowsPerSecond = 0,
+                Timestamp = DateTime.UtcNow.AddMinutes(-1)
+            }
+        };
 
     public IEnumerable<ReplicationTask> GetAll()
     {
