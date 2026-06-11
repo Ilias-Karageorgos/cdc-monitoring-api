@@ -10,10 +10,12 @@ namespace CdcMonitoringApi.Controllers;
 public class TasksController : ControllerBase
 {
     private readonly ITaskRepository _repo;
+    private readonly IMetricRepository _metricRepo;
 
-    public TasksController(ITaskRepository repo)
+    public TasksController(ITaskRepository repo, IMetricRepository metricRepo)
     {
         _repo = repo;
+        _metricRepo = metricRepo;
     }
 
     [HttpGet]
@@ -35,15 +37,15 @@ public class TasksController : ControllerBase
     }
 
 
-    // [HttpGet("{id}/metrics")]
-    // public ActionResult<IEnumerable<TaskMetric>> GetTaskMetrics(int id)
-    // {
-    //     var task = _store.GetById(id);
-    //     if (task == null)
-    //     {
-    //         return NotFound();
-    //     }
-    //     var metrics = _store.GetMetricsByTaskId(id);
-    //     return Ok(metrics);
-    // }
+    [HttpGet("{id}/metrics")]
+    public async Task<ActionResult<IEnumerable<TaskMetric>>> GetTaskMetrics(int id)
+    {
+        var task = await _repo.GetByIdAsync(id);
+        if (task == null)
+        {
+            return NotFound();
+        }
+        var metrics = await _metricRepo.GetByTaskIdAsync(id);
+        return Ok(metrics);
+    }
 }

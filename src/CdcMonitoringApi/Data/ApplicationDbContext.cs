@@ -17,7 +17,8 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        
+        #region ReplicationTask
         modelBuilder.Entity<ReplicationTask>().HasData(
             new ReplicationTask
             {
@@ -47,6 +48,52 @@ public class ApplicationDbContext : DbContext
                 LastUpdateTime = new DateTime(2026, 6, 11, 12, 0, 0, DateTimeKind.Utc)
             }
         );
-    }
+        #endregion
 
+
+        #region TaskMetric                   
+        modelBuilder.Entity<TaskMetric>().HasData(
+            new TaskMetric
+            {
+                Id = 1,
+                TaskId = 1,
+                LagSeconds = 0.5,
+                RowsPerSecond = 1200,
+                Timestamp = new DateTime(2026, 6, 11, 13, 57, 0, DateTimeKind.Utc)
+            },
+            new TaskMetric
+            {
+                Id = 2,
+                TaskId = 1,
+                LagSeconds = 0.7,
+                RowsPerSecond = 1100,
+                Timestamp = new DateTime(2026, 6, 11, 13, 58, 0, DateTimeKind.Utc)
+            },
+            new TaskMetric
+            {
+                Id = 3,
+                TaskId = 1,
+                LagSeconds = 0.6,
+                RowsPerSecond = 1300,
+                Timestamp = new DateTime(2026, 6, 11, 13, 59, 0, DateTimeKind.Utc)
+            },
+            new TaskMetric
+            {
+                Id = 4,
+                TaskId = 2,
+                LagSeconds = 5.2,
+                RowsPerSecond = 0,
+                Timestamp = new DateTime(2026, 6, 11, 12, 58, 0, DateTimeKind.Utc)
+            },
+            new TaskMetric
+            {
+                Id = 5,
+                TaskId = 2,
+                LagSeconds = 5.8,
+                RowsPerSecond = 0,
+                Timestamp = new DateTime(2026, 6, 11, 12, 59, 0, DateTimeKind.Utc)
+            }
+        );
+        #endregion
+    }
 }

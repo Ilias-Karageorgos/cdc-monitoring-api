@@ -15,11 +15,15 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        //TEMP  Handle potential circular references gracefully, DTO's will solve it.
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<IMetricRepository, MetricRepository>();
 
 
 var app = builder.Build();
