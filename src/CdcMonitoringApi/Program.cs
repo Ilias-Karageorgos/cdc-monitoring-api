@@ -1,6 +1,9 @@
 using CdcMonitoringApi.Data;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using CdcMonitoringApi.IRepositories;
+using CdcMonitoringApi.Repositories;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +20,7 @@ builder.Services.AddControllers()
 builder.Services.AddSingleton<InMemoryTaskStore>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 
 var app = builder.Build();

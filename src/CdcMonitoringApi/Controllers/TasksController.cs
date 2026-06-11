@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CdcMonitoringApi.Models;
-using CdcMonitoringApi.Data;
+using CdcMonitoringApi.IRepositories;
 
 
 namespace CdcMonitoringApi.Controllers;
@@ -9,24 +9,24 @@ namespace CdcMonitoringApi.Controllers;
 [Route("tasks")]
 public class TasksController : ControllerBase
 {
-    private readonly InMemoryTaskStore _store;
+    private readonly ITaskRepository _repo;
 
-    public TasksController(InMemoryTaskStore store)
+    public TasksController(ITaskRepository repo)
     {
-        _store = store;
+        _repo = repo;
     }
 
-    
     [HttpGet]
-    public IEnumerable<ReplicationTask> GetTasks()
+    public async Task<ActionResult<IEnumerable<ReplicationTask>>> GetTasks()
     {
-        return _store.GetAll();
+        var tasks = await _repo.GetAllAsync();
+        return Ok(tasks);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<ReplicationTask> GetTaskById(int id)
+    public async Task<ActionResult<ReplicationTask>> GetTaskById(int id)
     {
-        var task = _store.GetById(id);
+        var task = await _repo.GetByIdAsync(id);
         if (task == null)
         {
             return NotFound();
@@ -34,15 +34,16 @@ public class TasksController : ControllerBase
         return Ok(task);
     }
 
-    [HttpGet("{id}/metrics")]
-    public ActionResult<IEnumerable<TaskMetric>> GetTaskMetrics(int id)
-    {
-        var task = _store.GetById(id);
-        if (task == null)
-        {
-            return NotFound();
-        }
-        var metrics = _store.GetMetricsByTaskId(id);
-        return Ok(metrics);
-    }
+
+    // [HttpGet("{id}/metrics")]
+    // public ActionResult<IEnumerable<TaskMetric>> GetTaskMetrics(int id)
+    // {
+    //     var task = _store.GetById(id);
+    //     if (task == null)
+    //     {
+    //         return NotFound();
+    //     }
+    //     var metrics = _store.GetMetricsByTaskId(id);
+    //     return Ok(metrics);
+    // }
 }
