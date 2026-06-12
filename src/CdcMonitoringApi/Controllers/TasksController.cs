@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using CdcMonitoringApi.Models;
 using CdcMonitoringApi.IRepositories;
+using CdcMonitoringApi.Models.Dtos;
 
 
 namespace CdcMonitoringApi.Controllers;
@@ -17,20 +17,21 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ReplicationTask>>> GetTasks()
+    public async Task<ActionResult<IEnumerable<ReplicationTaskDto>>> GetTasks()
     {
         var tasks = await _repo.GetAllAsync();
-        return Ok(tasks);
+        var taskDtos = tasks.Select(ReplicationTaskDto.FromEntity);
+        return Ok(taskDtos);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ReplicationTask>> GetTaskById(int id)
+    public async Task<ActionResult<ReplicationTaskDto>> GetTaskById(int id)
     {
         var task = await _repo.GetByIdAsync(id);
         if (task == null)
         {
             return NotFound();
         }
-        return Ok(task);
+        return Ok(ReplicationTaskDto.FromEntity(task));
     }
 }

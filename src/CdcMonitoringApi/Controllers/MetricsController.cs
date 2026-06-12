@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using CdcMonitoringApi.Models;
+using CdcMonitoringApi.Models.Dtos;
 using CdcMonitoringApi.IRepositories;
 
 namespace CdcMonitoringApi.Controllers;
@@ -18,7 +18,7 @@ public class MetricsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TaskMetric>>> GetTaskMetrics(int taskId)
+    public async Task<ActionResult<IEnumerable<TaskMetricDto>>> GetTaskMetrics(int taskId)
     {
         var task = await _taskRepo.GetByIdAsync(taskId);
         if (task == null)
@@ -26,6 +26,7 @@ public class MetricsController : ControllerBase
             return NotFound();
         }
         var metrics = await _metricRepo.GetByTaskIdAsync(taskId);
-        return Ok(metrics);
+        var metricDtos = metrics.Select(TaskMetricDto.FromEntity);
+        return Ok(metricDtos);
     }
 }
