@@ -3,8 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using CdcMonitoringApi.IRepositories;
 using CdcMonitoringApi.Repositories;
-
-
+using CdcMonitoringApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IMetricRepository, MetricRepository>();
+builder.Services.AddHostedService<MetricGeneratorService>();
 
 
 var app = builder.Build();
