@@ -8,7 +8,16 @@ public class MetricGeneratorService : BackgroundService
 
     private readonly ILogger<MetricGeneratorService> _logger;
     private readonly IServiceScopeFactory _scopeFactory;
-
+    private static readonly string[] ErrorMessages =
+    {
+        "Connection timeout to source database",
+        "Schema drift detected on source table",
+        "Failed to apply transaction batch",
+        "Source log file rotated unexpectedly",
+        "Target table missing expected column",
+        "Replication lag exceeded threshold"
+    };
+    private static readonly ErrorSeverity[] Severities = Enum.GetValues<ErrorSeverity>();
 
     public MetricGeneratorService(ILogger<MetricGeneratorService> logger, IServiceScopeFactory scopeFactory)
     {
@@ -32,14 +41,36 @@ public class MetricGeneratorService : BackgroundService
             };
 
             dbContext.TaskMetrics.Add(metric);
+
+            TaskError? error = null;                          
+            if (Random.Shared.NextDouble() < 0.1)
+            {
+                error = new TaskError
+                {
+                    TaskId = Random.Shared.Next(1, 4),
+                    Message = ErrorMessages[Random.Shared.Next(ErrorMessages.Length)],
+                    Severity = Severities[Random.Shared.Next(Severities.Length)],
+                    Timestamp = DateTime.UtcNow
+                };
+
+                dbContext.TaskErrors.Add(error);
+            }
+
             await dbContext.SaveChangesAsync(stoppingToken);
 
             _logger.LogInformation(
                 "Inserted metric for task {TaskId}: lag={LagSeconds}s, rows/s={RowsPerSecond}",
                 metric.TaskId, metric.LagSeconds, metric.RowsPerSecond);
 
-            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            if (error != null)
+            {
+                _logger.LogWarning(
+                    "Generated {Severity} error for task {TaskId}: {Message}",
+                    error.Severity, error.TaskId, error.Message);
+            }
 
+
+            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
         }
     }
 }
