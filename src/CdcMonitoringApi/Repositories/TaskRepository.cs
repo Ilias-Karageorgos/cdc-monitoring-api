@@ -23,4 +23,8 @@ public class TaskRepository : ITaskRepository
     {
         return await _context.ReplicationTasks.FindAsync(id);
     }
+
+    public Task<bool> ExistsAsync(int id) =>
+    _context.ReplicationTasks.AnyAsync(t => t.Id == id);
+
 }
