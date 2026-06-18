@@ -20,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IMetricRepository, MetricRepository>();
+builder.Services.AddScoped<IErrorRepository, ErrorRepository>();
 builder.Services.AddHostedService<MetricGeneratorService>();
 
 
