@@ -13,3 +13,7 @@ obj/
 # Project internal notes (not for public repo)
 CLAUDE.md
 TESTREADME.md
+
+# Log files
+logs/
+*.log
