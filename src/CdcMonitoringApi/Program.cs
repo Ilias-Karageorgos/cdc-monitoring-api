@@ -5,6 +5,7 @@ using CdcMonitoringApi.IRepositories;
 using CdcMonitoringApi.Repositories;
 using CdcMonitoringApi.Services;
 using Serilog;
+using CdcMonitoringApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IMetricRepository, MetricRepository>();
 builder.Services.AddScoped<IErrorRepository, ErrorRepository>();
 builder.Services.AddHostedService<MetricGeneratorService>();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Logging.ClearProviders();
 builder.Services.AddSerilog(config =>
@@ -39,6 +41,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
